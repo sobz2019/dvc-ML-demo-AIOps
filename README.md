@@ -158,3 +158,66 @@ git add .
 git commit -m "stage 01 added"
 git push origin main
 ```
+
+## Step 13: For Data Versioning using DVC
+
+### 13.1-	Add your CSV file to DVC
+```bash
+dvc add data.csv
+```
+This command will:
+•	Move data.csv to the .dvc directory.
+•	Create a .dvc file (data.csv.dvc) that contains the tracking information for your data file.
+
+### 13.2-	Commit the changes: 
+
+Commit the changes to Git, including the DVC file and the .gitignore updates.
+```bash
+git add data.csv.dvc .gitignore
+git commit -m "Add data.csv to DVC"
+```
+
+### 13.3-	Store the data remotely: 
+
+To ensure that your data is backed up and can be retrieved later, configure a remote storage (this could be S3, Google Drive, SSH, etc.). Here’s an example using an S3 bucket:
+
+```bash
+dvc remote add -d myremote s3://mybucket/path
+```
+ 
+####  or 
+
+### If u want to setup a local DVC remote
+
+You can specify a directory in your project to act as the local remote storage. Let's say you want to use a directory named .dvcstore within your project folder
+
+```bash
+dvc remote add -d localremote .dvcstore
+```
+
+### 13.4-	Push the data to the local remote:
+```bash
+dvc push
+```
+
+### 13.5-	Making and tracking changes: 
+
+When you make changes to data.csv, you need to re-add it to DVC and commit the changes.
+
+```bash
+dvc add data.csv
+git add data.csv.dvc
+git commit -m "Update data.csv with new changes"
+dvc push
+```
+
+### 13.6-	Retrieving previous versions: 
+
+If you want to go back to a previous version of your data, you can use Git to checkout the corresponding commit and then use DVC to retrieve the data file.
+
+```bash
+git log # Find the commit hash you want to revert to
+git checkout <commit-hash>
+dvc checkout
+```
+
